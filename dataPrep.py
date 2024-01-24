@@ -31,10 +31,10 @@ def prepareBinaryDataSet():
     dataSet["content"] = dataSet["content"].apply(tokenisationAndNormalisation)
 
     #save
-    dataSet.to_csv("dataSet.csv")
-    print("dataset saved in dataSet.csv")
+    dataSet.to_csv("data/train/dataSet.csv")
+    print("dataset saved in data/train/dataSet.csv")
 
-if __name__ == "__main__" :
+def prepareNonBinaryDataSet():
     #dataset recuperation
     dataSet = pd.read_csv("data/train/train_extract_20200101_000000.csv")
     print(dataSet.shape)
@@ -53,5 +53,9 @@ if __name__ == "__main__" :
     dataSet["content"] = dataSet["content"].apply(tokenisationAndNormalisation)
 
     #save
-    dataSet.to_csv("dataSetNonBinary.csv")
-    print("dataset saved in dataSetNonBinary.csv")
+    dataSet.to_csv("data/train/dataSetNonBinary.csv")
+    print("dataset saved in data/train/dataSetNonBinary.csv")
+
+if __name__ == "__main__" :
+    prepareBinaryDataSet()
+    prepareNonBinaryDataSet()

@@ -6,8 +6,8 @@ from joblib import load
 
 def mainMenu():
     try:
-        classifier = load("unfairClauseDetectionModel.joblib")
-        load("vectorizer.joblib")
+        classifier = load("model/unfairClauseDetectionModel.joblib")
+        load("model/vectorizer.joblib")
         print("\n#####   main menu   #####\ncurrent model: " + str(type(classifier)) + "\n\n1: choose Identification Model\n2: detect potentialy unfair clauses in file\n3: classify clauses in file")
     except:
         print("\n#####   main menu   #####\ncurrent model: " + "none" + "\n\n1: choose Identification Model\n2: detect potentialy unfair clauses in file\n3: classify clauses in file")
@@ -20,8 +20,8 @@ def mainMenu():
     
     elif userInput == "2":
         try:
-            load("unfairClauseDetectionModel.joblib")
-            load("vectorizer.joblib")
+            load("model/unfairClauseDetectionModel.joblib")
+            load("model/vectorizer.joblib")
         except :
             print("no model detected: please load a model from the menu")
             return chooseModelMenu()
@@ -31,8 +31,8 @@ def mainMenu():
     elif userInput == "3":
         userInput = input("enter file path: ")
         try:
-            load("unfairClauseClassificationModel.joblib")
-            load("unfairClauseClassificationModel.joblib")
+            load("model/unfairClauseClassificationModel.joblib")
+            load("model/unfairClauseClassificationModel.joblib")
             print("begining classification")
         except:
             print("no model detected, training Model")

@@ -9,7 +9,7 @@ from joblib import dump, load
 from sklearn import svm
 
 def trainMultinomialNBModel():
-    dataSet = pd.read_csv("dataSet.csv")
+    dataSet = pd.read_csv("data/train/dataSet.csv")
 
     dataSet = dataSet.dropna()
     x = dataSet["content"]
@@ -27,12 +27,12 @@ def trainMultinomialNBModel():
     prediction = classifier.predict(X_test)
     print(classification_report(Y_test, prediction))
 
-    dump(vectorizer, "vectorizer.joblib")
-    dump(classifier, "unfairClauseDetectionModel.joblib")
-    print("model saved in unfairClauseDetectionModel.joblib")
+    dump(vectorizer, "model/vectorizer.joblib")
+    dump(classifier, "model/unfairClauseDetectionModel.joblib")
+    print("model saved in model/unfairClauseDetectionModel.joblib")
     
 def trainComplementNBModel():
-    dataSet = pd.read_csv("dataSet.csv")
+    dataSet = pd.read_csv("data/train/dataSet.csv")
 
     dataSet = dataSet.dropna()
     x = dataSet["content"]
@@ -50,12 +50,12 @@ def trainComplementNBModel():
     prediction = classifier.predict(X_test)
     print(classification_report(Y_test, prediction))
 
-    dump(vectorizer, "vectorizer.joblib")
-    dump(classifier, "unfairClauseDetectionModel.joblib")
-    print("model saved in unfairClauseDetectionModel.joblib")
+    dump(vectorizer, "model/vectorizer.joblib")
+    dump(classifier, "model/unfairClauseDetectionModel.joblib")
+    print("model saved in model/unfairClauseDetectionModel.joblib")
 
 def trainGaussianNBModel():
-    dataSet = pd.read_csv("dataSet.csv")
+    dataSet = pd.read_csv("data/train/dataSet.csv")
 
     dataSet = dataSet.dropna()
     x = dataSet["content"]
@@ -73,12 +73,12 @@ def trainGaussianNBModel():
     prediction = classifier.predict(X_test.toarray())
     print(classification_report(Y_test, prediction))
 
-    dump(vectorizer, "vectorizer.joblib")
-    dump(classifier, "unfairClauseDetectionModel.joblib")
-    print("model saved in unfairClauseDetectionModel.joblib")
+    dump(vectorizer, "model/vectorizer.joblib")
+    dump(classifier, "model/unfairClauseDetectionModel.joblib")
+    print("model saved in model/unfairClauseDetectionModel.joblib")
 
 def trainSVCModel():
-    dataSet = pd.read_csv("dataSet.csv")
+    dataSet = pd.read_csv("data/train/dataSet.csv")
     dataSet.dropna(inplace=True)
     corpus = dataSet["content"].tolist()
     vectorizer = CountVectorizer(ngram_range=(1,2))
@@ -98,8 +98,8 @@ def trainSVCModel():
     print(classification_report(Y_test, prediction))
     print(confusion_matrix(Y_test, prediction))
 
-    dump(vectorizer, "vectorizer.joblib")
-    dump(model, "unfairClauseDetectionModel.joblib")
+    dump(vectorizer, "model/vectorizer.joblib")
+    dump(model, "model/unfairClauseDetectionModel.joblib")
 
 
 def detectUnfairClauseInText(path:str):
@@ -116,15 +116,14 @@ def detectUnfairClauseInText(path:str):
         print("file not found: " + path)
         return 0
      
-    vectorizer:CountVectorizer = load("vectorizer.joblib")
-    classifier:MultinomialNB = load("unfairClauseDetectionModel.joblib")
+    vectorizer:CountVectorizer = load("model/vectorizer.joblib")
+    classifier:MultinomialNB = load("model/unfairClauseDetectionModel.joblib")
     
     res = []
     text = nltk.sent_tokenize(text) #sentence by sentence
     for sentence in text:
         detectionRes = detectIfUnfairClauseInLine([sentence.translate(str.maketrans('', '', string.punctuation))])
         if(detectionRes):
-            print(detectionRes)
             res.append([sentence])
         
     return res

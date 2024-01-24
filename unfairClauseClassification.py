@@ -10,7 +10,7 @@ import string
 
 def trainModel():
 
-    dataSet = pd.read_csv("dataSetNonBinary.csv")
+    dataSet = pd.read_csv("data/train/dataSetNonBinary.csv")
     dataSet.dropna(inplace=True)
     corpus = dataSet["content"].tolist()
     vectorizer = CountVectorizer(ngram_range=(1,2))
@@ -31,8 +31,8 @@ def trainModel():
     print(classification_report(Y_test, prediction))
     print(confusion_matrix(Y_test, prediction))
 
-    dump(vectorizer, "vectorizerClauseClassification.joblib")
-    dump(model, "unfairClauseClassificationModel.joblib")
+    dump(vectorizer, "model/vectorizerClauseClassification.joblib")
+    dump(model, "model/unfairClauseClassificationModel.joblib")
     
 def detectUnfairClauseInText(path:str):
     def detectIfUnfairClauseInLine(line:str):
@@ -41,15 +41,15 @@ def detectUnfairClauseInText(path:str):
         return int(str(pred[0])[:1]) #mise sous forme d'entier car pred est de type [float] et de taille 1
 
     try:
-        file = open(path, 'r')
+        file = open(path, 'r', encoding="utf-8")
         text = file.read()
         file.close()
     except:
         print("file not found: " + path)
         return 0
         
-    vectorizer:CountVectorizer = load("vectorizerClauseClassification.joblib")
-    classifier:MLPClassifier = load("unfairClauseClassificationModel.joblib")
+    vectorizer:CountVectorizer = load("model/vectorizerClauseClassification.joblib")
+    classifier:MLPClassifier = load("model/unfairClauseClassificationModel.joblib")
 
     dict = {"a":[], "ch":[], "cr":[], "j":[], "law":[], "ltd":[], "ter": [], "unc": [], "use":[]}
     swichDict = {1:"a", 2:"ch", 3: "cr", 4:"j", 5:"law", 6:"ltd", 7:"ter", 8:"unc", 9:"use"}
@@ -63,9 +63,9 @@ def detectUnfairClauseInText(path:str):
 def detectUnfairClauseInTextToString(path:str):
     res = detectUnfairClauseInText(path)
     for key, value in res.items():
-        print(key)
+        print("****" + key + "****")
         if(key != "unc"):
             for str in value:
-                print(" "+str)
+                print("     "+str)
         print()
         

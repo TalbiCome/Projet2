@@ -11,7 +11,7 @@ parameter_space = {
 mlp = MLPClassifier(solver="lbfgs", alpha=0.005, hidden_layer_sizes=(100,))
 clf = GridSearchCV(mlp, parameter_space, n_jobs=4, cv=3)
 
-dataSet = pd.read_csv("dataSetNonBinary.csv")
+dataSet = pd.read_csv("data/train/dataSetNonBinary.csv")
 dataSet.dropna(inplace=True)
 corpus = dataSet["content"].tolist()
 vectorizer = CountVectorizer(ngram_range=(1,2))
