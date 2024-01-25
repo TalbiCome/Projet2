@@ -7,6 +7,7 @@ from sklearn.neural_network import MLPClassifier
 from joblib import dump, load
 import nltk
 import string
+from nltk.corpus import stopwords
 
 def trainModel():
 
@@ -35,6 +36,15 @@ def trainModel():
     dump(model, "model/unfairClauseClassificationModel.joblib")
     
 def detectUnfairClauseInText(path:str):
+    def tokenisationAndNormalisation(str:str):
+        #normalisation
+        str = [char.lower() for char in str if char.lower() not in string.punctuation]
+        str = ''.join(str)
+        
+        #tokenisation en enlevant les mots peu important (stopwords)
+        res =  [word for word in str.split() if word not in stopwords.words("english")]
+        return ' '.join(res)
+    
     def detectIfUnfairClauseInLine(line:str):
         x = vectorizer.transform(line).toarray()
         pred = classifier.predict(x)
@@ -56,7 +66,7 @@ def detectUnfairClauseInText(path:str):
     
     text = nltk.sent_tokenize(text) #sentence by sentence
     for sentence in text:
-        detectionRes = detectIfUnfairClauseInLine([sentence.translate(str.maketrans('', '', string.punctuation))])
+        detectionRes = detectIfUnfairClauseInLine([tokenisationAndNormalisation(sentence)])
         dict.get(swichDict.get(detectionRes)).append(sentence)  
     return dict
 
@@ -69,3 +79,5 @@ def detectUnfairClauseInTextToString(path:str):
                 print("     "+str)
         print()
         
+if __name__ == "__main__" :
+    detectUnfairClauseInTextToString("data/validation/acme_clauses.txt")

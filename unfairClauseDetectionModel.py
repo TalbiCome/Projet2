@@ -7,6 +7,7 @@ from sklearn.naive_bayes import MultinomialNB, ComplementNB, GaussianNB
 from sklearn.metrics import classification_report, confusion_matrix
 from joblib import dump, load
 from sklearn import svm
+from nltk.corpus import stopwords
 
 def trainMultinomialNBModel():
     dataSet = pd.read_csv("data/train/dataSet.csv")
@@ -102,11 +103,20 @@ def trainSVCModel():
     dump(model, "model/unfairClauseDetectionModel.joblib")
 
 
-def detectUnfairClauseInText(path:str):
+def detectUnfairClauseInText(path:str): 
     def detectIfUnfairClauseInLine(line:str):
         x = vectorizer.transform(line).toarray()
         pred = classifier.predict(x)
         return int(str(pred[0])[:1]) #mise sous forme d'entier car pred est de type [float] et de taille 1
+    
+    def tokenisationAndNormalisation(str:str):
+        #normalisation
+        str = [char.lower() for char in str if char.lower() not in string.punctuation]
+        str = ''.join(str)
+        
+        #tokenisation en enlevant les mots peu important (stopwords)
+        res =  [word for word in str.split() if word not in stopwords.words("english")]
+        return [' '.join(res)]
     
     try:
         file = open(path, 'r', encoding="utf-8")
@@ -122,7 +132,10 @@ def detectUnfairClauseInText(path:str):
     res = []
     text = nltk.sent_tokenize(text) #sentence by sentence
     for sentence in text:
-        detectionRes = detectIfUnfairClauseInLine([sentence.translate(str.maketrans('', '', string.punctuation))])
+        
+        resultwords  = [word for word in sentence if word.lower() not in stopwords.words("english")]
+        result = ' '.join(resultwords)
+        detectionRes = detectIfUnfairClauseInLine(tokenisationAndNormalisation(sentence))
         if(detectionRes):
             res.append([sentence])
         
@@ -132,3 +145,6 @@ def detectUnfairClauseInTextToString(path:str):
     res = detectUnfairClauseInText(path)
     for line in res:
         print(line)
+
+if __name__ == "__main__" :
+    detectUnfairClauseInTextToString("data/validation/acme_clauses.txt")
