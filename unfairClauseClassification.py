@@ -80,4 +80,5 @@ def detectUnfairClauseInTextToString(path:str):
         print()
         
 if __name__ == "__main__" :
+    trainModel()
     detectUnfairClauseInTextToString("data/validation/acme_clauses.txt")

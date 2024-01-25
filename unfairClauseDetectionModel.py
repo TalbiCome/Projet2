@@ -27,6 +27,7 @@ def trainMultinomialNBModel():
     classifier = MultinomialNB().fit(X_train, Y_train)
     prediction = classifier.predict(X_test)
     print(classification_report(Y_test, prediction))
+    print(confusion_matrix(Y_test, prediction))
 
     dump(vectorizer, "model/vectorizer.joblib")
     dump(classifier, "model/unfairClauseDetectionModel.joblib")
@@ -50,6 +51,7 @@ def trainComplementNBModel():
     classifier = ComplementNB().fit(X_train, Y_train)
     prediction = classifier.predict(X_test)
     print(classification_report(Y_test, prediction))
+    print(confusion_matrix(Y_test, prediction))
 
     dump(vectorizer, "model/vectorizer.joblib")
     dump(classifier, "model/unfairClauseDetectionModel.joblib")
@@ -73,6 +75,7 @@ def trainGaussianNBModel():
     classifier = GaussianNB().fit(X_train.toarray(), Y_train)
     prediction = classifier.predict(X_test.toarray())
     print(classification_report(Y_test, prediction))
+    print(confusion_matrix(Y_test, prediction))
 
     dump(vectorizer, "model/vectorizer.joblib")
     dump(classifier, "model/unfairClauseDetectionModel.joblib")
@@ -82,7 +85,7 @@ def trainSVCModel():
     dataSet = pd.read_csv("data/train/dataSet.csv")
     dataSet.dropna(inplace=True)
     corpus = dataSet["content"].tolist()
-    vectorizer = CountVectorizer(ngram_range=(1,2))
+    vectorizer = CountVectorizer(ngram_range=(1,3))
     X = vectorizer.fit_transform(corpus)
     feature_names = vectorizer.get_feature_names_out()
     dense_array = X.toarray()
